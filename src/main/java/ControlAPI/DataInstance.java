@@ -17,7 +17,9 @@ public class DataInstance implements Validatable {
 
     public List<Double> numericFeatures; // The numerical features of the data point.
 
-    public List<String> discreteFeatures; // The discrete features of the data point.
+    public List<Integer> discreteFeatures; // The discrete features of the data point.
+
+    public List<String> categoricalFeatures; // The categorical features of the data point.
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public Double target; // The label/target of the data point.
@@ -31,25 +33,22 @@ public class DataInstance implements Validatable {
     }
 
     public DataInstance(List<Double> numericFeatures, Double target) {
-        this(null, numericFeatures, null, target, "training");
-    }
-
-    public DataInstance(List<Double> numericFeatures, List<String> discreteFeatures, Double target) {
-        this(null, numericFeatures, discreteFeatures, target, "training");
+        this(null, numericFeatures, null, null, target, "training");
     }
 
     public DataInstance(Long id,
                         List<Double> numericFeatures,
-                        List<String> discreteFeatures,
+                        List<Integer> discreteFeatures,
+                        List<String> categoricalFeatures,
                         Double target,
                         String operation) {
         this.id = id;
         this.numericFeatures = numericFeatures;
         this.discreteFeatures = discreteFeatures;
+        this.categoricalFeatures = categoricalFeatures;
         this.target = target;
         this.operation = operation;
     }
-
 
     public Double getTarget() {
         return target;
@@ -75,12 +74,20 @@ public class DataInstance implements Validatable {
         this.numericFeatures = numericFeatures;
     }
 
-    public List<String> getDiscreteFeatures() {
+    public List<Integer> getDiscreteFeatures() {
         return discreteFeatures;
     }
 
-    public void setDiscreteFeatures(List<String> discreteFeatures) {
+    public void setDiscreteFeatures(List<Integer> discreteFeatures) {
         this.discreteFeatures = discreteFeatures;
+    }
+
+    public List<String> getCategoricalFeatures() {
+        return categoricalFeatures;
+    }
+
+    public void setCategoricalFeaturesFeatures(List<String> categoricalFeatures) {
+        this.categoricalFeatures = categoricalFeatures;
     }
 
     public Long getId() {
@@ -119,7 +126,8 @@ public class DataInstance implements Validatable {
         if (operation == null || (!operation.equals("training") && !operation.equals("forecasting"))) return false;
         if (
                 (numericFeatures == null || numericFeatures.size() == 0) &&
-                        (discreteFeatures == null || discreteFeatures.size() == 0)
+                        (discreteFeatures == null || discreteFeatures.size() == 0) &&
+                        (categoricalFeatures == null || categoricalFeatures.size() == 0)
         ) return false;
         if (operation.equals("forecasting") && target != null) return false;
         return true;
