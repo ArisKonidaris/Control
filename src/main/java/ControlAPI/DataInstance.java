@@ -1,11 +1,15 @@
 package ControlAPI;
 
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A serializable POJO class representing a data point for training or predicting.
@@ -15,7 +19,7 @@ public class DataInstance implements Validatable {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public Long id; // A unique id for a data point.
 
-    public List<Double> numericFeatures; // The numerical features of the data point.
+    public List<Double> numericalFeatures; // The numerical features of the data point.
 
     public List<Integer> discreteFeatures; // The discrete features of the data point.
 
@@ -25,6 +29,8 @@ public class DataInstance implements Validatable {
     public Double target; // The label/target of the data point.
 
     public String operation; // The operation of this data point.
+
+    private Map stream_metadata = new HashMap<String,Object>(); // Metadata about the stream of the data point.
 
     @JsonIgnore
     public KafkaMetadata metadata;
@@ -37,13 +43,13 @@ public class DataInstance implements Validatable {
     }
 
     public DataInstance(Long id,
-                        List<Double> numericFeatures,
+                        List<Double> numericalFeatures,
                         List<Integer> discreteFeatures,
                         List<String> categoricalFeatures,
                         Double target,
                         String operation) {
         this.id = id;
-        this.numericFeatures = numericFeatures;
+        this.numericalFeatures = numericalFeatures;
         this.discreteFeatures = discreteFeatures;
         this.categoricalFeatures = categoricalFeatures;
         this.target = target;
@@ -66,12 +72,12 @@ public class DataInstance implements Validatable {
         this.operation = operation;
     }
 
-    public List<Double> getNumericFeatures() {
-        return numericFeatures;
+    public List<Double> getNumericalFeatures() {
+        return numericalFeatures;
     }
 
-    public void setNumericFeatures(List<Double> numericFeatures) {
-        this.numericFeatures = numericFeatures;
+    public void setNumericalFeatures(List<Double> numericFeatures) {
+        this.numericalFeatures = numericFeatures;
     }
 
     public List<Integer> getDiscreteFeatures() {
@@ -82,12 +88,12 @@ public class DataInstance implements Validatable {
         this.discreteFeatures = discreteFeatures;
     }
 
-    public List<String> getCategoricalFeatures() {
-        return categoricalFeatures;
+    public void setCategoricalFeatures(List<String> categoricalFeatures) {
+        this.categoricalFeatures = categoricalFeatures;
     }
 
-    public void setCategoricalFeaturesFeatures(List<String> categoricalFeatures) {
-        this.categoricalFeatures = categoricalFeatures;
+    public List<String> getCategoricalFeatures() {
+        return categoricalFeatures;
     }
 
     public Long getId() {
@@ -96,6 +102,20 @@ public class DataInstance implements Validatable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    @JsonAnyGetter
+    public Map getStreamMetadata() {
+        return stream_metadata;
+    }
+
+    public void setStreamMetadata(Map metadata) {
+        this.stream_metadata = metadata;
+    }
+
+    @JsonAnySetter
+    public void set(String name, Object value) {
+        stream_metadata.put(name, value);
     }
 
     @JsonIgnore
@@ -125,7 +145,7 @@ public class DataInstance implements Validatable {
     public boolean isValid() {
         if (operation == null || (!operation.equals("training") && !operation.equals("forecasting"))) return false;
         if (
-                (numericFeatures == null || numericFeatures.size() == 0) &&
+                (numericalFeatures == null || numericalFeatures.size() == 0) &&
                         (discreteFeatures == null || discreteFeatures.size() == 0) &&
                         (categoricalFeatures == null || categoricalFeatures.size() == 0)
         ) return false;
