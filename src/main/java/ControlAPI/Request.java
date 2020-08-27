@@ -130,7 +130,7 @@ public class Request implements Validatable {
         if (training_configuration != null &&
                 training_configuration.containsKey("protocol") &&
                 !training_configuration.get("protocol").equals("Asynchronous") &&
-                !training_configuration.get("protocol").equals("Asynchronous") &&
+                !training_configuration.get("protocol").equals("Synchronous") &&
                 !training_configuration.get("protocol").equals("Asynchronous")) return false;
         try {
             if (training_configuration != null &&
