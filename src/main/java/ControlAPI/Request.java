@@ -131,11 +131,22 @@ public class Request implements Validatable {
                 training_configuration.containsKey("protocol") &&
                 !training_configuration.get("protocol").equals("Asynchronous") &&
                 !training_configuration.get("protocol").equals("Synchronous") &&
-                !training_configuration.get("protocol").equals("Asynchronous")) return false;
+                !training_configuration.get("protocol").equals("Asynchronous")
+        ) return false;
         try {
             if (training_configuration != null &&
                     training_configuration.containsKey("mini_batch_size") &&
-                    ((int) training_configuration.get("mini_batch_size")) <= 0 ) return false;
+                    (
+                            (
+                                    (training_configuration.get("mini_batch_size") instanceof Double) &&
+                                    ((Double) training_configuration.get("mini_batch_size")) <= 0D
+                            ) ||
+                            (
+                                    (training_configuration.get("mini_batch_size") instanceof Integer) &&
+                                    ((int) training_configuration.get("mini_batch_size")) <= 0
+                            )
+                    )
+            ) return false;
         } catch (Exception e) {
             return false;
         }
