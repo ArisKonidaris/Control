@@ -16,10 +16,10 @@ public class Request implements Validatable {
     public String request; // The request type.
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    public List<Preprocessor> preprocessors; // A list of preprocessors. This could be empty.
+    public List<PreprocessorPOJO> preprocessors; // A list of preprocessors. This could be empty.
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    public Learner learner; // A single learner for the ML Pipeline. This should not be empty.
+    public LearnerPOJO learner; // A single learner for the ML Pipeline. This should not be empty.
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public Long requestId; // The unique id associated with this request.
@@ -41,8 +41,8 @@ public class Request implements Validatable {
 
     public Request(int id,
                    String request,
-                   List<Preprocessor> preprocessors,
-                   Learner learner,
+                   List<PreprocessorPOJO> preprocessors,
+                   LearnerPOJO learner,
                    Long requestId,
                    Map<String, Object> training_configuration) {
         this.id = id;
@@ -69,19 +69,19 @@ public class Request implements Validatable {
         this.request = request;
     }
 
-    public List<Preprocessor> getPreprocessors() {
+    public List<PreprocessorPOJO> getPreprocessors() {
         return preprocessors;
     }
 
-    public void setPreprocessors(List<Preprocessor> preprocessors) {
+    public void setPreprocessors(List<PreprocessorPOJO> preprocessors) {
         this.preprocessors = preprocessors;
     }
 
-    public Learner getLearner() {
+    public LearnerPOJO getLearner() {
         return learner;
     }
 
-    public void setLearner(Learner learner) {
+    public void setLearner(LearnerPOJO learner) {
         this.learner = learner;
     }
 
@@ -126,12 +126,12 @@ public class Request implements Validatable {
         if (request.equals("Create") && learner == null) return false;
         if (request.equals("Update") && preprocessors == null && learner == null) return false;
         if (learner != null && learner.name == null) return false;
-        if (preprocessors != null) for (Preprocessor p : preprocessors) if (p.name == null) return false;
+        if (preprocessors != null) for (PreprocessorPOJO p : preprocessors) if (p.name == null) return false;
         if (training_configuration != null &&
                 training_configuration.containsKey("protocol") &&
                 !training_configuration.get("protocol").equals("Asynchronous") &&
                 !training_configuration.get("protocol").equals("Synchronous") &&
-                !training_configuration.get("protocol").equals("Asynchronous")
+                !training_configuration.get("protocol").equals("FGM")
         ) return false;
         try {
             if (training_configuration != null &&

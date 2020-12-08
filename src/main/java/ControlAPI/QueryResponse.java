@@ -23,9 +23,9 @@ public class QueryResponse implements Serializable {
     public int id; // The unique id of the ML Pipeline that provided this answer.
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    public List<Preprocessor> preprocessors; // A list of preprocessors. This could be empty.
+    public List<PreprocessorPOJO> preprocessors; // A list of preprocessors. This could be empty.
 
-    public Learner learner; // A single learner for the ML Pipeline. This should not be empty.
+    public LearnerPOJO learner; // A single learner for the ML Pipeline. This should not be empty.
 
     public String protocol; // The distributed algorithm used to train a ML Pipeline in parallel.
 
@@ -42,8 +42,8 @@ public class QueryResponse implements Serializable {
 
     public QueryResponse(long responseId,
                          int id,
-                         List<Preprocessor> preprocessors,
-                         Learner learner,
+                         List<PreprocessorPOJO> preprocessors,
+                         LearnerPOJO learner,
                          String protocol,
                          Long dataFitted,
                          Double loss,
@@ -68,19 +68,19 @@ public class QueryResponse implements Serializable {
         this.id = id;
     }
 
-    public List<Preprocessor> getPreprocessors() {
+    public List<PreprocessorPOJO> getPreprocessors() {
         return preprocessors;
     }
 
-    public void setPreprocessors(List<Preprocessor> preprocessors) {
+    public void setPreprocessors(List<PreprocessorPOJO> preprocessors) {
         this.preprocessors = preprocessors;
     }
 
-    public Learner getLearner() {
+    public LearnerPOJO getLearner() {
         return learner;
     }
 
-    public void setLearner(Learner learner) {
+    public void setLearner(LearnerPOJO learner) {
         this.learner = learner;
     }
 

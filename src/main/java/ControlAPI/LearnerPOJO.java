@@ -8,13 +8,17 @@ import java.util.Map;
 /**
  * A serializable POJO class representing a machine learning algorithm (e.i. Passive Aggressive Classifier).
  */
-public class Learner extends Transformer {
-    public Learner() {
+public class LearnerPOJO extends TransformerPOJO {
+
+    public LearnerPOJO() {
         super();
     }
 
-    public Learner(String name, Map<String, Object> hyperparameters, Map<String, Object> parameters) {
-        super(name, hyperparameters, parameters);
+    public LearnerPOJO(String name,
+                       Map<String, Object> hyperparameters,
+                       Map<String, Object> parameters,
+                       Map<String, Object> data_structure) {
+        super(name, hyperparameters, parameters, data_structure);
     }
 
     @Override
