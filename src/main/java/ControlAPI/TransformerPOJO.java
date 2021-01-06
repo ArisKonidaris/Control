@@ -1,36 +1,39 @@
 package ControlAPI;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.util.Map;
 
+import static jdk.nashorn.internal.ir.debug.ObjectSizeCalculator.getObjectSize;
+
 /**
  * A serializable POJO class representing a transformer (e.i. Preprocessor or Learner).
  */
-public class TransformerPOJO {
+public class TransformerPOJO implements CountableSerial {
 
     public String name; // The name of the transformer.
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    public Map<String, Object> hyperparameters; // The hyper parameters of the preprocessor.
+    public Map<String, Object> hyperParameters; // The hyper parameters of the preprocessor.
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public Map<String, Object> parameters; // The parameters of the preprocessor.
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    public Map<String, Object> data_structure; // The data structure of the preprocessor.
+    public Map<String, Object> dataStructure; // The data structure of the preprocessor.
 
     public TransformerPOJO() {
     }
 
     public TransformerPOJO(String name,
-                           Map<String, Object> hyperparameters,
+                           Map<String, Object> hyperParameters,
                            Map<String, Object> parameters,
-                           Map<String, Object> data_structure) {
+                           Map<String, Object> dataStructure) {
         this.name = name;
-        this.hyperparameters = hyperparameters;
+        this.hyperParameters = hyperParameters;
         this.parameters = parameters;
-        this.data_structure = data_structure;
+        this.dataStructure = dataStructure;
     }
 
     public String getName() {
@@ -49,19 +52,38 @@ public class TransformerPOJO {
         this.parameters = parameters;
     }
 
-    public Map<String, Object> getHyperparameters() {
-        return hyperparameters;
+    public Map<String, Object> getHyperParameters() {
+        return hyperParameters;
     }
 
-    public void setHyperparameters(Map<String, Object> hyperparameters) {
-        this.hyperparameters = hyperparameters;
+    public void setHyperParameters(Map<String, Object> hyperParameters) {
+        this.hyperParameters = hyperParameters;
     }
 
-    public Map<String, Object> getData_structure() {
-        return data_structure;
+    public Map<String, Object> getDataStructure() {
+        return dataStructure;
     }
 
-    public void setData_structure(Map<String, Object> data_structure) {
-        this.data_structure = data_structure;
+    public void setDataStructure(Map<String, Object> dataStructure) {
+        this.dataStructure = dataStructure;
     }
+
+    @JsonIgnore
+    public int getMapSize(Map<String, Object> map) {
+        int mapSize = 0;
+        for (Map.Entry<String, Object> next : map.entrySet()) {
+            mapSize += ((int) (8L * next.getKey().length())) + getObjectSize(next.getValue());
+        }
+        return mapSize;
+    }
+
+    @Override
+    @JsonIgnore
+    public int getSize() {
+        return ((name != null) ? 8 * name.length() : 0) +
+                ((hyperParameters != null) ? getMapSize(hyperParameters) : 0) +
+                ((parameters != null) ? getMapSize(parameters) : 0) +
+                ((dataStructure != null) ? getMapSize(dataStructure) : 0);
+    }
+
 }

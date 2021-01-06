@@ -1,5 +1,6 @@
 package ControlAPI;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -15,13 +16,14 @@ public class PreprocessorPOJO extends TransformerPOJO {
     }
 
     public PreprocessorPOJO(String name,
-                            Map<String, Object> hyperparameters,
+                            Map<String, Object> hyperParameters,
                             Map<String, Object> parameters,
-                            Map<String, Object> data_structure) {
-        super(name, hyperparameters, parameters, data_structure);
+                            Map<String, Object> dataStructure) {
+        super(name, hyperParameters, parameters, dataStructure);
     }
 
     @Override
+    @JsonIgnore
     public String toString() {
         try {
             return toJsonString();
@@ -30,7 +32,9 @@ public class PreprocessorPOJO extends TransformerPOJO {
         }
     }
 
+    @JsonIgnore
     public String toJsonString() throws JsonProcessingException {
         return new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(this);
     }
+
 }

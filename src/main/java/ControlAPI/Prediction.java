@@ -1,16 +1,13 @@
 package ControlAPI;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.io.Serializable;
-
-public class Prediction implements Serializable {
+public class Prediction implements CountableSerial {
 
     Integer mlPipeline;
-
     DataInstance dataPoint;
-
     Double prediction;
 
     public Prediction() {
@@ -20,19 +17,6 @@ public class Prediction implements Serializable {
         this.mlPipeline = mlPipeline;
         this.dataPoint = dataPoint;
         this.prediction = prediction;
-    }
-
-    @Override
-    public String toString() {
-        try {
-            return toJsonString();
-        } catch (JsonProcessingException e) {
-            return "Non printable prediction.";
-        }
-    }
-
-    public String toJsonString() throws JsonProcessingException {
-        return new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(this);
     }
 
     public Integer getMlPipeline() {
@@ -57,6 +41,33 @@ public class Prediction implements Serializable {
 
     public void setDataInstanceId(DataInstance dataPoint) {
         this.dataPoint = dataPoint;
+    }
+
+    public void setDataPoint(DataInstance dataPoint) {
+        this.dataPoint = dataPoint;
+    }
+
+    @Override
+    @JsonIgnore
+    public String toString() {
+        try {
+            return toJsonString();
+        } catch (JsonProcessingException e) {
+            return "Non printable prediction.";
+        }
+    }
+
+    @JsonIgnore
+    public String toJsonString() throws JsonProcessingException {
+        return new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(this);
+    }
+
+    @Override
+    @JsonIgnore
+    public int getSize() {
+        return ((mlPipeline != null) ? 4 : 0) +
+                ((mlPipeline != null) ? dataPoint.getSize() : 0) +
+                ((prediction != null) ? 8 : 0);
     }
 
 }

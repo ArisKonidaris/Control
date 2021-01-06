@@ -1,8 +1,8 @@
 package ControlAPI;
 
-import java.io.Serializable;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
-public class KafkaMetadata implements Serializable {
+public class KafkaMetadata implements CountableSerial {
 
     String topic;
     Integer partition;
@@ -61,4 +61,15 @@ public class KafkaMetadata implements Serializable {
     public void setTimestamp(Long timestamp) {
         this.timestamp = timestamp;
     }
+
+    @Override
+    @JsonIgnore
+    public int getSize() {
+        return  ((topic != null) ? 8 * topic.length() : 0) +
+                ((partition != null) ? 4 : 0) +
+                ((key != null) ? 8 : 0) +
+                ((offset != null) ? 8 : 0) +
+                ((timestamp != null) ? 8 : 0);
+    }
+
 }

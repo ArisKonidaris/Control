@@ -1,17 +1,17 @@
 package ControlAPI;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.io.Serializable;
 import java.util.List;
 
 /**
  * A serializable POJO class representing a response
  * from the Online Machine Leaning component.
  */
-public class QueryResponse implements Serializable {
+public class QueryResponse implements CountableSerial {
 
     /**
      * The unique id associated with this request. This is the answer to a "Query" request
@@ -20,28 +20,41 @@ public class QueryResponse implements Serializable {
      */
     public long responseId;
 
-    public int id; // The unique id of the ML Pipeline that provided this answer.
+    /**
+     * This is the id of a response divided into multiple responses due to its big size.
+     */
+    public long subResponseId;
 
+    /** The unique id of the ML Pipeline that provided this answer. */
+    public int mlpId;
+
+    /** A list of preprocessors. This could be empty. */
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    public List<PreprocessorPOJO> preprocessors; // A list of preprocessors. This could be empty.
+    public List<PreprocessorPOJO> preprocessors;
 
-    public LearnerPOJO learner; // A single learner for the ML Pipeline. This should not be empty.
+    /** A single learner for the ML Pipeline. This should not be empty. */
+    public LearnerPOJO learner;
 
-    public String protocol; // The distributed algorithm used to train a ML Pipeline in parallel.
+    /** The distributed algorithm used to train a ML Pipeline in parallel. */
+    public String protocol;
 
-    public Long dataFitted; // The number of fitted data points.
+    /** The number of fitted data points. */
+    public Long dataFitted;
 
-    public Double loss; // The average loss incurred from the most recently fitted data.
+    /** The average loss incurred from the most recently fitted data. */
+    public Double loss;
 
-    public Double cumulativeLoss; // The total cumulative loss of the learner.
+    /** The total cumulative loss of the learner. */
+    public Double cumulativeLoss;
 
-    public Double score; // The query of the Machine Leaning algorithm.
+    /** The query of the Machine Leaning algorithm. */
+    public Double score;
 
     public QueryResponse() {
     }
 
     public QueryResponse(long responseId,
-                         int id,
+                         int mlpId,
                          List<PreprocessorPOJO> preprocessors,
                          LearnerPOJO learner,
                          String protocol,
@@ -50,7 +63,8 @@ public class QueryResponse implements Serializable {
                          Double cumulativeLoss,
                          Double score) {
         this.responseId = responseId;
-        this.id = id;
+        this.subResponseId = 0;
+        this.mlpId = mlpId;
         this.preprocessors = preprocessors;
         this.learner = learner;
         this.protocol = protocol;
@@ -60,12 +74,34 @@ public class QueryResponse implements Serializable {
         this.score = score;
     }
 
-    public int getId() {
-        return id;
+    public QueryResponse(long responseId,
+                         long subResponseId,
+                         int mlpId,
+                         List<PreprocessorPOJO> preprocessors,
+                         LearnerPOJO learner,
+                         String protocol,
+                         Long dataFitted,
+                         Double loss,
+                         Double cumulativeLoss,
+                         Double score) {
+        this.responseId = responseId;
+        this.subResponseId = subResponseId;
+        this.mlpId = mlpId;
+        this.preprocessors = preprocessors;
+        this.learner = learner;
+        this.protocol = protocol;
+        this.dataFitted = dataFitted;
+        this.loss = loss;
+        this.cumulativeLoss = cumulativeLoss;
+        this.score = score;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public int getMlpId() {
+        return mlpId;
+    }
+
+    public void setMlpId(int mlpId) {
+        this.mlpId = mlpId;
     }
 
     public List<PreprocessorPOJO> getPreprocessors() {
@@ -108,6 +144,14 @@ public class QueryResponse implements Serializable {
         this.responseId = responseId;
     }
 
+    public long getSubResponseId() {
+        return subResponseId;
+    }
+
+    public void setSubResponseId(long subResponseId) {
+        this.subResponseId = subResponseId;
+    }
+
     public Long getDataFitted() {
         return dataFitted;
     }
@@ -132,7 +176,17 @@ public class QueryResponse implements Serializable {
         this.cumulativeLoss = cumulativeLoss;
     }
 
+    @JsonIgnore
+    public int getPreprocessorsSize() {
+        int ppSize = 0;
+        for (PreprocessorPOJO pp : preprocessors) {
+            ppSize += pp.getSize();
+        }
+        return ppSize;
+    }
+
     @Override
+    @JsonIgnore
     public String toString() {
         try {
             return toJsonString();
@@ -141,8 +195,22 @@ public class QueryResponse implements Serializable {
         }
     }
 
+    @JsonIgnore
     public String toJsonString() throws JsonProcessingException {
         return new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(this);
+    }
+
+    @Override
+    @JsonIgnore
+    public int getSize() {
+        return 20 +
+                ((preprocessors != null) ? getPreprocessorsSize() : 0) +
+                ((learner != null) ? learner.getSize() : 0) +
+                ((protocol != null) ? 8 * protocol.length() : 0) +
+                ((dataFitted != null) ? 8 : 0) +
+                ((loss != null) ? 8 : 0) +
+                ((cumulativeLoss != null) ? 8 : 0) +
+                ((score != null) ? 8 : 0);
     }
 
 }
