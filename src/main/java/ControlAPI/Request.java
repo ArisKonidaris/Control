@@ -159,6 +159,9 @@ public class Request implements Validatable, CountableSerial {
                 trainingConfiguration.containsKey("protocol") &&
                 !trainingConfiguration.get("protocol").equals("Asynchronous") &&
                 !trainingConfiguration.get("protocol").equals("Synchronous") &&
+                !trainingConfiguration.get("protocol").equals("SSP") &&
+                !trainingConfiguration.get("protocol").equals("EASGD") &&
+                !trainingConfiguration.get("protocol").equals("GM") &&
                 !trainingConfiguration.get("protocol").equals("FGM")
         ) return false;
         try {

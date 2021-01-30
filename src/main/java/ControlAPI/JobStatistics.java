@@ -62,12 +62,12 @@ public class JobStatistics {
                     performance + "," +
                     stats.getPipeline() + "," +
                     stats.getProtocol() + "," +
-                    stats.getMeanBufferSize() + "," +
+                    String.format("%.3f", stats.getMeanBufferSize()) + "," +
                     stats.getModels() + "," +
                     stats.getBytes() + "," +
                     stats.getBlocks() + "," +
                     stats.getFitted() + "," +
-                    stats.getScore() + "\n";
+                    String.format("%.4f", stats.getScore()) + "\n";
         return result;
     }
 
