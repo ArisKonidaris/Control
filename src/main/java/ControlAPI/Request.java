@@ -157,6 +157,7 @@ public class Request implements Validatable, CountableSerial {
         if (preProcessors != null) for (PreprocessorPOJO p : preProcessors) if (p.name == null) return false;
         if (trainingConfiguration != null &&
                 trainingConfiguration.containsKey("protocol") &&
+                !trainingConfiguration.get("protocol").equals("SingleLearner") &&
                 !trainingConfiguration.get("protocol").equals("Asynchronous") &&
                 !trainingConfiguration.get("protocol").equals("Synchronous") &&
                 !trainingConfiguration.get("protocol").equals("SSP") &&
