@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+/**
+ * A POJO class for a prediction.
+ */
 public class Prediction implements CountableSerial {
 
     Integer mlPipeline;
