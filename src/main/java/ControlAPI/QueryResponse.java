@@ -1,7 +1,6 @@
 package ControlAPI;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -29,7 +28,6 @@ public class QueryResponse implements CountableSerial {
     public int mlpId;
 
     /** A list of preprocessors. This could be empty. */
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     public List<PreprocessorPOJO> preprocessors;
 
     /** A single learner for the ML Pipeline. This should not be empty. */
