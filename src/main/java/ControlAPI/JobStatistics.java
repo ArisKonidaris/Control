@@ -67,7 +67,9 @@ public class JobStatistics {
                     stats.getBytes() + "," +
                     stats.getBlocks() + "," +
                     stats.getFitted() + "," +
-                    String.format("%.4f", stats.getScore()) + "\n";
+                    String.format("%.4f", stats.getScore()) + "," +
+                    stats.getLearningCurve().toString() + "," +
+                    stats.getLCX().toString() + "\n";
         return result;
     }
 
